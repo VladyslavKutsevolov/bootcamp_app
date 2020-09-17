@@ -7,11 +7,7 @@ const pool = new Pool({
   database: 'bootcampx',
 });
 
-const cohortName = process.argv[2];
-const limit = process.argv[3] || 5;
-pool
-  .query(
-    `
+const queryStr = `
 SELECT 
   students.id AS student_id, 
   students.name AS student_name, 
@@ -20,12 +16,16 @@ FROM students
   JOIN cohorts ON cohorts.id = cohort_id
 WHERE cohorts.name LIKE $1
 LIMIT $2;
-`,
-[`%${cohortName}%`, limit]
-  )
+`;
+
+const cohortName = process.argv[2];
+const limit = process.argv[3] || 5;
+
+pool
+  .query(queryStr, [`%${cohortName}%`, limit])
   .then((res) => {
     console.log(res.rows);
   })
   .catch((err) => console.error('query error', err.stack));
 
-  module.exports = pool
+module.exports = pool;

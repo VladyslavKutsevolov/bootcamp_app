@@ -1,10 +1,6 @@
-const pool = require('./students')
+const pool = require('./students');
 
-
-const cohortName = process.argv[2]
-pool
-  .query(
-    `
+const queryStr = `
 SELECT 
   teachers.name AS teacher, 
   cohorts.name AS cohort
@@ -15,9 +11,12 @@ FROM assistance_requests
 WHERE cohorts.name = $1
 GROUP BY teachers.name, cohorts.name
 ORDER BY teachers.name;
-`,
-[cohortName]
-  )
+`;
+
+const cohortName = process.argv[2];
+
+pool
+  .query(queryStr, [cohortName])
   .then((res) => {
     console.log(res.rows);
   })
